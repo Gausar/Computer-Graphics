@@ -17,14 +17,18 @@ void resize(int width, int height)
     glLoadIdentity();
 }
 
-void drawHexagon(float scale)
+void drawHexagon(float scale, float angleOffset)
 {
     glBegin(GL_LINE_LOOP);
     for (int i = 0; i < 6; i++) {
         float a = 2.0 * 3.1415926f * float(i) / 6.0;
+
         float x = cosf(a) * scale;
         float y = sinf(a) * scale;
-        glVertex2f(x, y);
+
+        float rotatedX = x * cos(angleOffset) - y * sin(angleOffset);
+        float rotatedY = x * sin(angleOffset) + y * cos(angleOffset);
+        glVertex2f(rotatedX, rotatedY);
     }
     glEnd();
 }
@@ -33,14 +37,12 @@ void renderHexagons()
 {
     glColor3f(r, g, b);
     for (int i = 0; i < 30; i++) {
-        glPushMatrix();
         float scale = 1.0f - (float)i / 30.0;
-        glScalef(scale, scale, 1.0);
-        glRotatef(angle + i * 10, 0.0, 0.0, 1.0);
-        drawHexagon(1.0f);
-        glPopMatrix();
+        float angleOffset = angle + i * 4;
+        drawHexagon(scale, angleOffset);
     }
 }
+
 
 void hexagon(void)
 {
@@ -64,29 +66,21 @@ void hexagon(void)
             else if(i%2==1&&j%2==0){
                 gluOrtho2D(0.5, -0.5, -0.5, 0.5);
             }
-            else if(i%2==0&&j%2==1){
+            else if(i%2==0&&j%2==1){ //mur n tegsh, bagana ni sondgoi
                 gluOrtho2D(-0.5, 0.5, 0.5, -0.5);
             }
-            else{
+            else{ //hoyulaa tegsh
                 gluOrtho2D(-0.5, 0.5, -0.5, 0.5);
             }
-
-
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-            /*if (j%2 == 0) {
-                glScalef(-1.0, 1.0, 1.0);
-            }
-            if(i%2==0){
-                glScalef(1.0, -1.0, 1.0);
-            }*/
             renderHexagons();
         }
     }
     glFlush();
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
     glutInitWindowSize(600, 480);
@@ -96,7 +90,7 @@ int main(int argc, char *argv[]) {
     glutReshapeFunc(resize);
     glutDisplayFunc(hexagon);
 
-    glClearColor(0, 1, 1, 1);
+    glClearColor(1, 1, 1, 1);
 
     glutMainLoop();
     return EXIT_SUCCESS;

@@ -43,6 +43,9 @@
 			<Add directory="C:/Program Files/CodeBlocks/MinGW/x86_64-w64-mingw32/lib" />
 		</Linker>
 		<Unit filename="main.cpp" />
+		<Unit filename="mmm.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
